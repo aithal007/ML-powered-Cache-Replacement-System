@@ -1,12 +1,12 @@
-# 🧠 ML-Powered Cache Replacement System# ML-Powered Cache Replacement System# ML-Powered Cache Replacement System<div align="center"># ML-Powered Cache Replacement SystemML-Cache-Project
+# 🧠 ML-Powered Cache Replacement System# 🧠 ML-Powered Cache Replacement System# ML-Powered Cache Replacement System# ML-Powered Cache Replacement System<div align="center"># ML-Powered Cache Replacement SystemML-Cache-Project
 
 
 
-A machine learning-based cache replacement system that uses **LightGBM** and **Random Forest** to predict optimal cache eviction decisions, consistently outperforming the traditional **LRU (Least Recently Used)** policy.
+Machine learning models (LightGBM & Random Forest) that outperform traditional LRU cache replacement by **+2.47%** on real Azure LLM workloads.
 
 
 
----A machine learning-based cache replacement system that uses **LightGBM** and **Random Forest** to predict optimal cache eviction decisions, outperforming traditional LRU (Least Recently Used) policy.
+---A machine learning-based cache replacement system that uses **LightGBM** and **Random Forest** to predict optimal cache eviction decisions, consistently outperforming the traditional **LRU (Least Recently Used)** policy.
 
 
 
@@ -14,39 +14,155 @@ A machine learning-based cache replacement system that uses **LightGBM** and **R
 
 
 
-The ML-powered policies consistently outperform the standard LRU policy. The system was benchmarked on **100,000 augmented cache accesses** from the Azure LLM trace.## OverviewA machine learning-based cache replacement policy that learns from real access patterns and outperforms traditional LRU (Least Recently Used) cache.
+Benchmarked on **100,000 cache accesses** from Azure LLM Inference Trace.---A machine learning-based cache replacement system that uses **LightGBM** and **Random Forest** to predict optimal cache eviction decisions, outperforming traditional LRU (Least Recently Used) policy.
 
 
 
-**Random Forest** proved to be the most accurate model, while **LightGBM** offered a very strong, fast-inference alternative.
+| Cache Size | LRU Hit Rate | LightGBM | Random Forest | Improvement |
+
+|------------|--------------|----------|---------------|-------------|
+
+| 100        | 27.29%       | 28.23%   | 28.22%        | **+0.94%**  |## 📊 Performance Results
+
+| 500        | 38.07%       | 41.52%   | 41.48%        | **+3.45%**  |
+
+| 1000       | 50.30%       | 54.00%   | 54.05%        | **+3.75%**  |
+
+| 2000       | 70.58%       | 72.33%   | 72.36%        | **+1.78%**  |
+
+| **Average**| **46.56%**   | **49.02%** | **49.03%**  | **+2.47%**  |The ML-powered policies consistently outperform the standard LRU policy. The system was benchmarked on **100,000 augmented cache accesses** from the Azure LLM trace.## OverviewA machine learning-based cache replacement policy that learns from real access patterns and outperforms traditional LRU (Least Recently Used) cache.
 
 
 
-| Cache Size | LRU Hit Rate | LightGBM | Random Forest | Best ML Improvement |Traditional cache policies like LRU use simple heuristics. This project demonstrates that machine learning can learn complex access patterns from real workloads and make smarter eviction decisions. Trained on **Azure LLM Inference Trace** data, both ML models achieve better hit rates than LRU across all cache sizes.
-
-|------------|--------------|----------|---------------|---------------------|
-
-| 100        | 27.29%       | 28.23%   | 28.22%        | **+0.94%**          |
-
-| 500        | 38.07%       | 41.52%   | 41.48%        | **+3.45%**          |
-
-| 1000       | 50.30%       | 54.00%   | 54.05%        | **+3.75%**          |## Performance Results## Overview# 🧠 ML-Powered Cache Replacement System================
-
-| 2000       | 70.58%       | 72.33%   | 72.36%        | **+1.78%**          |
-
-| **Average**| **46.56%**   | **49.02%** | **49.03%**  | **+2.47%**          |
+**Key Finding**: Random Forest achieves the best accuracy (RMSE: 10,768) while LightGBM offers faster inference (~130 it/s vs 15 it/s).
 
 
 
-### Key TakeawaysTested on 100,000 augmented Azure LLM inference accesses:
+---**Random Forest** proved to be the most accurate model, while **LightGBM** offered a very strong, fast-inference alternative.
 
 
 
-- 🏆 **Random Forest Wins**: Achieves the highest average accuracy (lower RMSE) and the best hit rate overall.
+## 🚀 Quick Start
 
-- 🚀 **Consistent Improvement**: Both ML models beat LRU at every cache size, with the most significant gain (**+3.75%**) at a cache size of **1000**.
 
-- ⚡ **Speed vs. Accuracy**: LightGBM is significantly faster at inference (~130 it/s) vs. Random Forest (~15 it/s), making it a great choice for speed-critical applications.### Hit Rate ComparisonThis project uses **LightGBM** to predict which cache blocks should be evicted. Trained on real **Azure LLM Inference Trace** data, the ML model achieves better hit rates than LRU across all cache sizes by learning complex access patterns.
+
+```bash| Cache Size | LRU Hit Rate | LightGBM | Random Forest | Best ML Improvement |Traditional cache policies like LRU use simple heuristics. This project demonstrates that machine learning can learn complex access patterns from real workloads and make smarter eviction decisions. Trained on **Azure LLM Inference Trace** data, both ML models achieve better hit rates than LRU across all cache sizes.
+
+# Install dependencies
+
+pip install -r requirements.txt|------------|--------------|----------|---------------|---------------------|
+
+
+
+# Run the complete pipeline| 100        | 27.29%       | 28.23%   | 28.22%        | **+0.94%**          |
+
+python 0_convert_azure_trace.py      # Convert Azure CSV to trace format
+
+python 0_augment_azure_trace.py      # Augment 8k → 100k accesses| 500        | 38.07%       | 41.52%   | 41.48%        | **+3.45%**          |
+
+python 1_feature_engineering.py      # Extract 8 features
+
+python 2_train_model.py              # Train both ML models| 1000       | 50.30%       | 54.00%   | 54.05%        | **+3.75%**          |## Performance Results## Overview# 🧠 ML-Powered Cache Replacement System================
+
+python 3_benchmark.py                # Compare LRU vs ML models
+
+```| 2000       | 70.58%       | 72.33%   | 72.36%        | **+1.78%**          |
+
+
+
+---| **Average**| **46.56%**   | **49.02%** | **49.03%**  | **+2.47%**          |
+
+
+
+## 🧠 How It Works
+
+
+
+**8 Enhanced Features** (vs LRU's single "recency" metric):### Key TakeawaysTested on 100,000 augmented Azure LLM inference accesses:
+
+
+
+| Feature | Description |
+
+|---------|-------------|
+
+| Recency | Time since last access |- 🏆 **Random Forest Wins**: Achieves the highest average accuracy (lower RMSE) and the best hit rate overall.
+
+| Frequency | Total access count |
+
+| Log Recency/Frequency | Handle skewed distributions |- 🚀 **Consistent Improvement**: Both ML models beat LRU at every cache size, with the most significant gain (**+3.75%**) at a cache size of **1000**.
+
+| Interval Variance | Detect periodic patterns |
+
+| Average Interval | Mean time between accesses |- ⚡ **Speed vs. Accuracy**: LightGBM is significantly faster at inference (~130 it/s) vs. Random Forest (~15 it/s), making it a great choice for speed-critical applications.### Hit Rate ComparisonThis project uses **LightGBM** to predict which cache blocks should be evicted. Trained on real **Azure LLM Inference Trace** data, the ML model achieves better hit rates than LRU across all cache sizes by learning complex access patterns.
+
+| Age | Time since first access |
+
+| Recent Access Rate | Burst detection |
+
+
+
+**Models**:---
+
+- **LightGBM**: 500 trees, depth 8, fast inference
+
+- **Random Forest**: 500 trees, depth 8, highest accuracy
+
+
+
+---## 🧠 How It Works: Enhanced Feature Engineering| Cache Size | LRU    | LightGBM | Random Forest | Best Winner    |
+
+
+
+## 💾 Dataset
+
+
+
+**Source**: Azure LLM Inference Trace (`AzureLLMInferenceTrace_code.csv`)Instead of LRU's single heuristic (recency), this system uses ML models trained on **8 enhanced features** to predict an item's "reuse distance" (how soon it will be needed again).|------------|--------|----------|---------------|----------------|
+
+- Original: 8,819 KV-cache requests
+
+- Augmented: 100,000 accesses (preserves hot/warm/cold patterns)
+
+
+
+---| Feature               | Description                                              || 100        | 27.29% | 28.23%   | 28.22%        | LightGBM       |## Performance Results### *Intelligent Cache Management using Machine Learning*A machine learning-based cache replacement policy that outperforms traditional LRU (Least Recently Used) by learning access patterns from real workloads.
+
+
+
+## 📁 Project Structure|-----------------------|----------------------------------------------------------|
+
+
+
+```| **Recency**           | Time since last access.                                  || 500        | 38.07% | 41.52%   | 41.48%        | LightGBM       |
+
+├── 0_convert_azure_trace.py    # Data conversion
+
+├── 0_augment_azure_trace.py    # Data augmentation| **Frequency**         | Total access count.                                      |
+
+├── 1_feature_engineering.py    # Feature extraction
+
+├── 2_train_model.py            # Model training| **Log Recency**       | Log-transformed recency to handle skewed data.           || 1000       | 50.30% | 54.00%   | **54.05%**    | Random Forest  |
+
+├── 3_benchmark.py              # Performance comparison
+
+├── cache_simulator.py          # LRU & ML cache implementations| **Log Frequency**     | Log-transformed frequency.                               |
+
+└── requirements.txt            # Dependencies
+
+```| **Interval Variance** | Measures the regularity of access patterns.              || 2000       | 70.58% | 72.33%   | **72.36%**    | Random Forest  |
+
+
+
+---| **Average Interval**  | The mean time between accesses.                          |
+
+
+
+## 📄 License| **Age**               | Time since the block's first access.                     || **Average**| **46.56%** | **49.02%** | **49.03%** | **Random Forest** |Tested on 100,000 Azure LLM inference accesses:
+
+
+
+MIT License - see [LICENSE](LICENSE) for details.| **Recent Access Rate**| Access count within a recent time window (burst detection). |
 
 
 
@@ -54,37 +170,8 @@ The ML-powered policies consistently outperform the standard LRU policy. The sys
 
 
 
-## 🧠 How It Works: Enhanced Feature Engineering| Cache Size | LRU    | LightGBM | Random Forest | Best Winner    |
+**Author**: [aithal007](https://github.com/aithal007) | **⭐ Star if useful!**---
 
-
-
-Instead of LRU's single heuristic (recency), this system uses ML models trained on **8 enhanced features** to predict an item's "reuse distance" (how soon it will be needed again).|------------|--------|----------|---------------|----------------|
-
-
-
-| Feature               | Description                                              || 100        | 27.29% | 28.23%   | 28.22%        | LightGBM       |## Performance Results### *Intelligent Cache Management using Machine Learning*A machine learning-based cache replacement policy that outperforms traditional LRU (Least Recently Used) by learning access patterns from real workloads.
-
-|-----------------------|----------------------------------------------------------|
-
-| **Recency**           | Time since last access.                                  || 500        | 38.07% | 41.52%   | 41.48%        | LightGBM       |
-
-| **Frequency**         | Total access count.                                      |
-
-| **Log Recency**       | Log-transformed recency to handle skewed data.           || 1000       | 50.30% | 54.00%   | **54.05%**    | Random Forest  |
-
-| **Log Frequency**     | Log-transformed frequency.                               |
-
-| **Interval Variance** | Measures the regularity of access patterns.              || 2000       | 70.58% | 72.33%   | **72.36%**    | Random Forest  |
-
-| **Average Interval**  | The mean time between accesses.                          |
-
-| **Age**               | Time since the block's first access.                     || **Average**| **46.56%** | **49.02%** | **49.03%** | **Random Forest** |Tested on 100,000 Azure LLM inference accesses:
-
-| **Recent Access Rate**| Access count within a recent time window (burst detection). |
-
-
-
----
 
 ### Key Results
 
