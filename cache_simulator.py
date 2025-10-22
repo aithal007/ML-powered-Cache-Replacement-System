@@ -1,6 +1,14 @@
 import collections
 import joblib
 import numpy as np
+import os
+
+# Try to import TensorFlow for LSTM support
+try:
+    from tensorflow import keras
+    TENSORFLOW_AVAILABLE = True
+except ImportError:
+    TENSORFLOW_AVAILABLE = False
 
 #################################################################
 # CLASS 1: THE BASELINE CACHE
@@ -66,9 +74,23 @@ class LearnedCache:
         self.capacity = capacity
         self.cache = {} # A simple dict to store key -> value
         
+        # Detect model type and load accordingly
+        self.is_lstm = model_path.endswith('.h5') or model_path.endswith('.keras')
+        
         # Load the trained model from the file
         try:
-            self.model = joblib.load(model_path)
+            if self.is_lstm:
+                if not TENSORFLOW_AVAILABLE:
+                    raise ImportError("TensorFlow is not installed. Install it with: pip install tensorflow")
+                self.model = keras.models.load_model(model_path)
+                # Load the scaler for LSTM
+                scaler_path = model_path.replace('.h5', '_scaler.pkl').replace('.keras', '_scaler.pkl')
+                self.scaler = joblib.load(scaler_path)
+                print(f"Loaded LSTM model from {model_path}")
+            else:
+                self.model = joblib.load(model_path)
+                self.scaler = None
+                print(f"Loaded {model_path.split('_')[-1].replace('.pkl', '')} model from {model_path}")
         except FileNotFoundError:
             print(f"Error: Model file not found at {model_path}")
             print("Please run 2_train_model.py first.")
@@ -175,7 +197,15 @@ class LearnedCache:
         
         # 3. Ask the model
         # We get an array of predicted reuse distances
-        predictions = self.model.predict(features_for_prediction)
+        if self.is_lstm:
+            # For LSTM: scale, reshape, and predict
+            features_array = np.array(features_for_prediction)
+            features_scaled = self.scaler.transform(features_array)
+            features_reshaped = features_scaled.reshape((features_scaled.shape[0], 1, features_scaled.shape[1]))
+            predictions = self.model.predict(features_reshaped, verbose=0).flatten()
+        else:
+            # For tree-based models (LightGBM, Random Forest)
+            predictions = self.model.predict(features_for_prediction)
         
         # 4. Find and evict the worst item
         # np.argmax() finds the index of the highest value

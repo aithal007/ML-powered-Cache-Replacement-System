@@ -36,6 +36,7 @@ def main():
     cache_capacities = [100, 500, 1000, 2000]
     LGBM_MODEL_PATH = 'cache_model_lgbm.pkl'
     RF_MODEL_PATH = 'cache_model_rf.pkl'
+    LSTM_MODEL_PATH = 'cache_model_lstm.h5'
 
     results = []
 
@@ -44,6 +45,7 @@ def main():
         lru_cache = LRUCache(capacity=capacity)
         learned_cache_lgbm = LearnedCache(capacity=capacity, model_path=LGBM_MODEL_PATH)
         learned_cache_rf = LearnedCache(capacity=capacity, model_path=RF_MODEL_PATH)
+        learned_cache_lstm = LearnedCache(capacity=capacity, model_path=LSTM_MODEL_PATH)
 
         print("Simulating LRU Cache...")
         for block_id in tqdm(test_trace, desc="LRU"):
@@ -60,15 +62,22 @@ def main():
             if learned_cache_rf.get(block_id) == -1:
                 learned_cache_rf.put(block_id, block_id)
 
+        print("Simulating LSTM Cache...")
+        for block_id in tqdm(test_trace, desc="LSTM"):
+            if learned_cache_lstm.get(block_id) == -1:
+                learned_cache_lstm.put(block_id, block_id)
+
         lru_hit_rate = lru_cache.get_hit_rate()
         lgbm_hit_rate = learned_cache_lgbm.get_hit_rate()
         rf_hit_rate = learned_cache_rf.get_hit_rate()
+        lstm_hit_rate = learned_cache_lstm.get_hit_rate()
 
         results.append({
             'Capacity': capacity,
             'LRU Hit %': lru_hit_rate * 100,
             'LightGBM Hit %': lgbm_hit_rate * 100,
-            'RandomForest Hit %': rf_hit_rate * 100
+            'RandomForest Hit %': rf_hit_rate * 100,
+            'LSTM Hit %': lstm_hit_rate * 100
         })
 
     print("\n--- FINAL BENCHMARK RESULTS ---")

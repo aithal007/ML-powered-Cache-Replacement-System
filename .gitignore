@@ -10,6 +10,10 @@ build/
 
 # ML Models
 *.pkl
+*.h5
+*.keras
+cache_model_lstm_scaler.pkl
+best_model_info.txt
 
 # Data files (too large)
 trace.txt
