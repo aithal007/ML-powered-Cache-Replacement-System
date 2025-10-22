@@ -34,32 +34,41 @@ def main():
     print(f"Loaded {len(test_trace)} accesses for benchmark.")
 
     cache_capacities = [100, 500, 1000, 2000]
-    MODEL_PATH = 'cache_model.pkl'
+    LGBM_MODEL_PATH = 'cache_model_lgbm.pkl'
+    RF_MODEL_PATH = 'cache_model_rf.pkl'
 
     results = []
 
     for capacity in cache_capacities:
         print(f"\n--- Testing Cache Capacity: {capacity} ---")
         lru_cache = LRUCache(capacity=capacity)
-        learned_cache = LearnedCache(capacity=capacity, model_path=MODEL_PATH)
+        learned_cache_lgbm = LearnedCache(capacity=capacity, model_path=LGBM_MODEL_PATH)
+        learned_cache_rf = LearnedCache(capacity=capacity, model_path=RF_MODEL_PATH)
 
         print("Simulating LRU Cache...")
         for block_id in tqdm(test_trace, desc="LRU"):
             if lru_cache.get(block_id) == -1:
                 lru_cache.put(block_id, block_id)
 
-        print("Simulating Learned Cache...")
-        for block_id in tqdm(test_trace, desc="Learned"):
-            if learned_cache.get(block_id) == -1:
-                learned_cache.put(block_id, block_id)
+        print("Simulating LightGBM Cache...")
+        for block_id in tqdm(test_trace, desc="LightGBM"):
+            if learned_cache_lgbm.get(block_id) == -1:
+                learned_cache_lgbm.put(block_id, block_id)
+
+        print("Simulating Random Forest Cache...")
+        for block_id in tqdm(test_trace, desc="RandomForest"):
+            if learned_cache_rf.get(block_id) == -1:
+                learned_cache_rf.put(block_id, block_id)
 
         lru_hit_rate = lru_cache.get_hit_rate()
-        learned_hit_rate = learned_cache.get_hit_rate()
+        lgbm_hit_rate = learned_cache_lgbm.get_hit_rate()
+        rf_hit_rate = learned_cache_rf.get_hit_rate()
 
         results.append({
             'Capacity': capacity,
             'LRU Hit %': lru_hit_rate * 100,
-            'Learned Hit %': learned_hit_rate * 100
+            'LightGBM Hit %': lgbm_hit_rate * 100,
+            'RandomForest Hit %': rf_hit_rate * 100
         })
 
     print("\n--- FINAL BENCHMARK RESULTS ---")
