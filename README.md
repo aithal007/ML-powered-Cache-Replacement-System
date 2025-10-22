@@ -1,276 +1,550 @@
-# ML-Powered Cache Replacement System# ML-Powered Cache Replacement System<div align="center"># ML-Powered Cache Replacement SystemML-Cache-Project
+# 🧠 ML-Powered Cache Replacement System# ML-Powered Cache Replacement System# ML-Powered Cache Replacement System<div align="center"># ML-Powered Cache Replacement SystemML-Cache-Project
 
 
 
-A machine learning-based cache replacement system that uses **LightGBM** and **Random Forest** to predict optimal cache eviction decisions, outperforming traditional LRU (Least Recently Used) policy.
+A machine learning-based cache replacement system that uses **LightGBM** and **Random Forest** to predict optimal cache eviction decisions, consistently outperforming the traditional **LRU (Least Recently Used)** policy.
 
 
 
-## OverviewA machine learning-based cache replacement policy that learns from real access patterns and outperforms traditional LRU (Least Recently Used) cache.
+---A machine learning-based cache replacement system that uses **LightGBM** and **Random Forest** to predict optimal cache eviction decisions, outperforming traditional LRU (Least Recently Used) policy.
 
 
 
-Traditional cache policies like LRU use simple heuristics. This project demonstrates that machine learning can learn complex access patterns from real workloads and make smarter eviction decisions. Trained on **Azure LLM Inference Trace** data, both ML models achieve better hit rates than LRU across all cache sizes.
+## 📊 Performance Results
 
 
 
-## Performance Results## Overview# 🧠 ML-Powered Cache Replacement System================
+The ML-powered policies consistently outperform the standard LRU policy. The system was benchmarked on **100,000 augmented cache accesses** from the Azure LLM trace.## OverviewA machine learning-based cache replacement policy that learns from real access patterns and outperforms traditional LRU (Least Recently Used) cache.
 
 
 
-Tested on 100,000 augmented Azure LLM inference accesses:
+**Random Forest** proved to be the most accurate model, while **LightGBM** offered a very strong, fast-inference alternative.
 
 
 
-### Hit Rate ComparisonThis project uses **LightGBM** to predict which cache blocks should be evicted. Trained on real **Azure LLM Inference Trace** data, the ML model achieves better hit rates than LRU across all cache sizes by learning complex access patterns.
+| Cache Size | LRU Hit Rate | LightGBM | Random Forest | Best ML Improvement |Traditional cache policies like LRU use simple heuristics. This project demonstrates that machine learning can learn complex access patterns from real workloads and make smarter eviction decisions. Trained on **Azure LLM Inference Trace** data, both ML models achieve better hit rates than LRU across all cache sizes.
+
+|------------|--------------|----------|---------------|---------------------|
+
+| 100        | 27.29%       | 28.23%   | 28.22%        | **+0.94%**          |
+
+| 500        | 38.07%       | 41.52%   | 41.48%        | **+3.45%**          |
+
+| 1000       | 50.30%       | 54.00%   | 54.05%        | **+3.75%**          |## Performance Results## Overview# 🧠 ML-Powered Cache Replacement System================
+
+| 2000       | 70.58%       | 72.33%   | 72.36%        | **+1.78%**          |
+
+| **Average**| **46.56%**   | **49.02%** | **49.03%**  | **+2.47%**          |
 
 
 
-| Cache Size | LRU    | LightGBM | Random Forest | Best Winner    |
-
-|------------|--------|----------|---------------|----------------|
-
-| 100        | 27.29% | 28.23%   | 28.22%        | LightGBM       |## Performance Results### *Intelligent Cache Management using Machine Learning*A machine learning-based cache replacement policy that outperforms traditional LRU (Least Recently Used) by learning access patterns from real workloads.
-
-| 500        | 38.07% | 41.52%   | 41.48%        | LightGBM       |
-
-| 1000       | 50.30% | 54.00%   | **54.05%**    | Random Forest  |
-
-| 2000       | 70.58% | 72.33%   | **72.36%**    | Random Forest  |
-
-| **Average**| **46.56%** | **49.02%** | **49.03%** | **Random Forest** |Tested on 100,000 Azure LLM inference accesses:
+### Key TakeawaysTested on 100,000 augmented Azure LLM inference accesses:
 
 
+
+- 🏆 **Random Forest Wins**: Achieves the highest average accuracy (lower RMSE) and the best hit rate overall.
+
+- 🚀 **Consistent Improvement**: Both ML models beat LRU at every cache size, with the most significant gain (**+3.75%**) at a cache size of **1000**.
+
+- ⚡ **Speed vs. Accuracy**: LightGBM is significantly faster at inference (~130 it/s) vs. Random Forest (~15 it/s), making it a great choice for speed-critical applications.### Hit Rate ComparisonThis project uses **LightGBM** to predict which cache blocks should be evicted. Trained on real **Azure LLM Inference Trace** data, the ML model achieves better hit rates than LRU across all cache sizes by learning complex access patterns.
+
+
+
+---
+
+
+
+## 🧠 How It Works: Enhanced Feature Engineering| Cache Size | LRU    | LightGBM | Random Forest | Best Winner    |
+
+
+
+Instead of LRU's single heuristic (recency), this system uses ML models trained on **8 enhanced features** to predict an item's "reuse distance" (how soon it will be needed again).|------------|--------|----------|---------------|----------------|
+
+
+
+| Feature               | Description                                              || 100        | 27.29% | 28.23%   | 28.22%        | LightGBM       |## Performance Results### *Intelligent Cache Management using Machine Learning*A machine learning-based cache replacement policy that outperforms traditional LRU (Least Recently Used) by learning access patterns from real workloads.
+
+|-----------------------|----------------------------------------------------------|
+
+| **Recency**           | Time since last access.                                  || 500        | 38.07% | 41.52%   | 41.48%        | LightGBM       |
+
+| **Frequency**         | Total access count.                                      |
+
+| **Log Recency**       | Log-transformed recency to handle skewed data.           || 1000       | 50.30% | 54.00%   | **54.05%**    | Random Forest  |
+
+| **Log Frequency**     | Log-transformed frequency.                               |
+
+| **Interval Variance** | Measures the regularity of access patterns.              || 2000       | 70.58% | 72.33%   | **72.36%**    | Random Forest  |
+
+| **Average Interval**  | The mean time between accesses.                          |
+
+| **Age**               | Time since the block's first access.                     || **Average**| **46.56%** | **49.02%** | **49.03%** | **Random Forest** |Tested on 100,000 Azure LLM inference accesses:
+
+| **Recent Access Rate**| Access count within a recent time window (burst detection). |
+
+
+
+---
 
 ### Key Results
 
+## 💾 Dataset: Azure LLM Inference Trace
 
+
+
+The models are trained on **real-world data** from an Azure LLM inference workload.
 
 - **Random Forest** wins overall with 49.03% average hit rate| Cache Size | LRU Hit Rate | ML Hit Rate | Improvement |[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)This project demonstrates a learned cache eviction policy vs LRU.
 
-- Both ML models consistently outperform LRU by **~2.5%** on average
+- **Source**: `AzureLLMInferenceTrace_code.csv` (8,819 original KV-cache requests).
 
-- Best improvement at cache size 1000: **+3.7%** over LRU|------------|--------------|-------------|-------------|
+- **Augmentation**: The `0_augment_azure_trace.py` script expands the dataset to **100,000 accesses** while preserving its statistical properties (hot/warm/cold blocks, temporal locality) to create a robust training set.- Both ML models consistently outperform LRU by **~2.5%** on average
 
-- Random Forest has lower RMSE (10,768 vs 11,386) - more accurate predictions
 
-- LightGBM is faster but Random Forest is slightly more accurate| 100        | 27.29%       | **28.23%**  | +0.94%      |[![LightGBM](https://img.shields.io/badge/LightGBM-ML%20Framework-green.svg)](https://lightgbm.readthedocs.io/)
 
+---- Best improvement at cache size 1000: **+3.7%** over LRU|------------|--------------|-------------|-------------|
 
 
-## Features| 500        | 38.07%       | **41.52%**  | +3.45%      |
 
+## 🚀 Installation- Random Forest has lower RMSE (10,768 vs 11,386) - more accurate predictions
 
 
-### Enhanced Feature Engineering (8 Features)| 1000       | 50.30%       | **54.00%**  | +3.70%      |[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)## 🎯 Project Overview
 
-1. **Recency** - Time since last access (temporal locality)
+### Clone the repository:- LightGBM is faster but Random Forest is slightly more accurate| 100        | 27.29%       | **28.23%**  | +0.94%      |[![LightGBM](https://img.shields.io/badge/LightGBM-ML%20Framework-green.svg)](https://lightgbm.readthedocs.io/)
 
-2. **Frequency** - Total access count (hot block detection)| 2000       | 70.58%       | **72.33%**  | +1.75%      |
 
-3. **Log Recency** - Log-transformed recency (handles skewed distributions)
 
-4. **Log Frequency** - Log-transformed frequency (normalizes patterns)[![Stars](https://img.shields.io/github/stars/aithal007/ML-powered-Cache-Replacement-System?style=social)](https://github.com/aithal007/ML-powered-Cache-Replacement-System)
+```bash
 
-5. **Interval Variance** - Regularity of access pattern (periodic detection)
+git clone https://github.com/aithal007/ML-powered-Cache-Replacement-System.git
 
-6. **Average Interval** - Mean time between accesses (predictable patterns)**Key Result:** ML consistently outperforms LRU, with best improvement of 3.70% at cache size 1000.
-
-7. **Age** - Time since first access (new vs old blocks)
-
-8. **Recent Access Rate** - Accesses in last 100 timesteps (burst detection)Files:
-
-
-
-### Machine Learning Models## Features
-
-
-
-**LightGBM:****A revolutionary cache replacement policy that outperforms traditional LRU by learning complex access patterns from real-world workloads**
-
-- 500 trees, depth 8
-
-- Fast inference (~130 it/s)- **8 Enhanced Features:** Recency, frequency, log-transforms, interval variance, average interval, age, recent access rate
-
-- RMSE: 11,386.48
-
-- Best for: Speed-critical applications- **Optimized LightGBM Model:** 500 trees, depth 8, L1/L2 regularizationThis project implements an intelligent cache replacement system using **LightGBM** machine learning model to predict which cache blocks should be evicted. Trained on real **Azure LLM Inference Trace** data, it achieves **better hit rates** than traditional LRU across all cache sizes.- `1_feature_engineering.py` - reads `trace.txt` and produces `features.csv`.
-
-
-
-**Random Forest:**- **Data Augmentation:** Augments 8,819 real traces to 100,000 while preserving access patterns
-
-- 500 trees, depth 8
-
-- Slower inference (~15 it/s)- **Real Azure Data:** Trained on actual LLM inference KV-cache access patterns[Features](#-features) •
-
-- RMSE: 10,768.71 (better accuracy)
-
-- Best for: Maximum hit rate
-
-
-
-### Data Augmentation## Project Structure[Performance](#-performance-results) •- `2_train_model.py` - trains a LightGBM model and saves `cache_model.pkl`.
-
-- Augments 8,819 real traces → 100,000 accesses
-
-- Preserves hot/warm/cold block distributions
-
-- Maintains temporal locality and burst patterns
-
-- Enables robust model training```[Installation](#️-installation) •
-
-
-
-## Project Structure├── 0_convert_azure_trace.py    # Convert Azure trace to cache format
-
-
-
-```├── 0_augment_azure_trace.py    # Augment trace data for training[Usage](#-quick-start) •## 📊 Performance Results- `cache_simulator.py` - contains `LRUCache` and `LearnedCache` classes.
-
-ML-Cache-Project/
-
-│├── 0_generate_data.py          # Generate synthetic trace (alternative)
-
-├── Data Generation
-
-│   ├── 0_convert_azure_trace.py    # Convert Azure trace to cache format├── 1_feature_engineering.py    # Extract features from trace[Documentation](#-technical-deep-dive)
-
-│   ├── 0_augment_azure_trace.py    # Augment 8k → 100k accesses
-
-│   └── 0_generate_data.py          # Generate synthetic trace (alternative)├── 2_train_model.py            # Train LightGBM model
-
-│
-
-├── ML Pipeline├── 3_benchmark.py              # Compare ML vs LRU- `3_benchmark.py` - runs comparisons and prints final hit rates.
-
-│   ├── 1_feature_engineering.py    # Extract 8 enhanced features
-
-│   ├── 2_train_model.py            # Train LightGBM + Random Forest├── 4_summary.py                # Display results
-
-│   └── cache_simulator.py          # LRU and ML cache implementations
-
-│├── cache_simulator.py          # LRU and Learned cache implementations---
-
-├── Evaluation
-
-│   ├── 3_benchmark.py              # Compare LRU vs LightGBM vs RF├── AzureLLMInferenceTrace_code.csv  # Real Azure LLM trace data
-
-│   ├── 4_summary.py                # Display detailed results
-
-│   └── 5_model_comparison.py       # Comprehensive 3-way comparison└── requirements.txt            # Python dependenciesTested on 100,000 augmented Azure LLM inference accesses:
-
-│
-
-├── Data```
-
-│   └── AzureLLMInferenceTrace_code.csv  # Real Azure LLM trace (8,819 requests)
-
-│</div>
-
-└── Configuration
-
-    ├── requirements.txt            # Python dependencies## Installation
-
-    └── .gitignore                  # Excludes models and generated files
-
-```Data:
-
-
-
-## Installation```bash
-
-
-
-### Prerequisitesgit clone https://github.com/aithal007/ML-powered-Cache-Replacement-System.git## 🎯 What is This?
-
-- Python 3.8 or higher
-
-- pip package managercd ML-powered-Cache-Replacement-System
-
-
-
-### Setuppip install -r requirements.txt| Cache Size | LRU Hit Rate | ML Hit Rate | Improvement |- `trace.txt` - NOT INCLUDED. You must download a large real-world trace (MSR Cambridge / SNIA / CloudPhysics) and place it here.
-
-
-
-```bash```
-
-# Clone the repository
-
-git clone https://github.com/aithal007/ML-powered-Cache-Replacement-System.gitTraditional cache replacement policies like **LRU (Least Recently Used)** rely on simple heuristics that fail to capture complex access patterns. This project introduces an **ML-powered cache** that:
-
-cd ML-powered-Cache-Replacement-System
-
-**Dependencies:** pandas, numpy, lightgbm, scikit-learn, joblib, tqdm
-
-# Install dependencies
-
-pip install -r requirements.txt|------------|--------------|-------------|-------------|
+cd ML-powered-Cache-Replacement-System## Features| 500        | 38.07%       | **41.52%**  | +3.45%      |
 
 ```
 
-## Usage
 
-### Dependencies
 
-- pandas >= 1.3.0- 🎓 **Learns** from real access patterns using machine learning
+### Install the required Python dependencies:
+
+### Enhanced Feature Engineering (8 Features)| 1000       | 50.30%       | **54.00%**  | +3.70%      |[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)## 🎯 Project Overview
+
+```bash
+
+pip install -r requirements.txt1. **Recency** - Time since last access (temporal locality)
+
+```
+
+2. **Frequency** - Total access count (hot block detection)| 2000       | 70.58%       | **72.33%**  | +1.75%      |
+
+**Dependencies:**
+
+- pandas >= 1.3.03. **Log Recency** - Log-transformed recency (handles skewed distributions)
 
 - numpy >= 1.21.0
 
-- lightgbm >= 3.3.0### Quick Start (Azure Trace)
+- lightgbm >= 3.3.04. **Log Frequency** - Log-transformed frequency (normalizes patterns)[![Stars](https://img.shields.io/github/stars/aithal007/ML-powered-Cache-Replacement-System?style=social)](https://github.com/aithal007/ML-powered-Cache-Replacement-System)
 
 - scikit-learn >= 1.0.0
 
-- joblib >= 1.1.0- 🚀 **Predicts** which blocks will be reused soon vs. later| **100**    | 27.29%       | **28.23%**  | **+0.94%**  |Quick start (PowerShell):
+- joblib >= 1.1.05. **Interval Variance** - Regularity of access pattern (periodic detection)
 
 - tqdm >= 4.62.0
 
+6. **Average Interval** - Mean time between accesses (predictable patterns)**Key Result:** ML consistently outperforms LRU, with best improvement of 3.70% at cache size 1000.
+
+---
+
+7. **Age** - Time since first access (new vs old blocks)
+
+## ▶️ Quick Start: Running the Pipeline
+
+8. **Recent Access Rate** - Accesses in last 100 timesteps (burst detection)Files:
+
+Run the scripts in order to replicate the entire process from data conversion to final benchmark.
+
+
+
 ```bash
 
-## Usage
-
-# Convert and augment Azure trace- 📊 **Outperforms** traditional LRU across all cache sizes
-
-### Option 1: Use Real Azure LLM Trace (Recommended)
+# 1. Convert the raw Azure trace to a simple cache trace format### Machine Learning Models## Features
 
 python 0_convert_azure_trace.py
 
-```bash
 
-# Step 1: Convert Azure trace to cache formatpython 0_augment_azure_trace.py- 🔬 **Trained** on real Azure LLM inference trace data| **500**    | 38.07%       | **41.52%**  | **+3.45%**  |
 
-python 0_convert_azure_trace.py
+# 2. Augment the data to create a larger, 100k-access trace
 
-# Output: 8,819 LLM requests → trace.txt
+python 0_augment_azure_trace.py**LightGBM:****A revolutionary cache replacement policy that outperforms traditional LRU by learning complex access patterns from real-world workloads**
 
 
 
-# Step 2: Augment trace for robust training# Train and benchmark
-
-python 0_augment_azure_trace.py
-
-# Output: 100,000 accesses with preserved patternspython 1_feature_engineering.py
-
-
-
-# Step 3: Extract 8 enhanced featurespython 2_train_model.py## 🏆 Performance Results| **1000**   | 50.30%       | **54.00%**  | **+3.70%**  |```powershell
+# 3. Process the trace and generate the 8-feature dataset (features.csv)- 500 trees, depth 8
 
 python 1_feature_engineering.py
 
-# Output: features.csv with recency, frequency, patterns, etc.python 3_benchmark.py
+- Fast inference (~130 it/s)- **8 Enhanced Features:** Recency, frequency, log-transforms, interval variance, average interval, age, recent access rate
 
+# 4. Train both LightGBM and Random Forest models on features.csv
 
-
-# Step 4: Train both ML modelspython 4_summary.py
+#    (Saves cache_model_lgbm.pkl and cache_model_rf.pkl)- RMSE: 11,386.48
 
 python 2_train_model.py
 
+- Best for: Speed-critical applications- **Optimized LightGBM Model:** 500 trees, depth 8, L1/L2 regularizationThis project implements an intelligent cache replacement system using **LightGBM** machine learning model to predict which cache blocks should be evicted. Trained on real **Azure LLM Inference Trace** data, it achieves **better hit rates** than traditional LRU across all cache sizes.- `1_feature_engineering.py` - reads `trace.txt` and produces `features.csv`.
+
+# 5. Run the final benchmark to compare LRU vs. both trained ML models
+
+python 3_benchmark.py
+
+
+
+# 6. View the detailed results summary**Random Forest:**- **Data Augmentation:** Augments 8,819 real traces to 100,000 while preserving access patterns
+
+python 5_model_comparison.py
+
+```- 500 trees, depth 8
+
+
+
+---- Slower inference (~15 it/s)- **Real Azure Data:** Trained on actual LLM inference KV-cache access patterns[Features](#-features) •
+
+
+
+## 📁 Project Structure- RMSE: 10,768.71 (better accuracy)
+
+
+
+```- Best for: Maximum hit rate
+
+ML-Cache-Project/
+
+│
+
+├── Data Generation/
+
+│   ├── 0_convert_azure_trace.py  # Converts raw Azure CSV to trace### Data Augmentation## Project Structure[Performance](#-performance-results) •- `2_train_model.py` - trains a LightGBM model and saves `cache_model.pkl`.
+
+│   ├── 0_augment_azure_trace.py  # Augments 8k trace -> 100k trace
+
+│   └── 0_generate_data.py        # Alternative: generates synthetic data- Augments 8,819 real traces → 100,000 accesses
+
+│
+
+├── ML Pipeline/- Preserves hot/warm/cold block distributions
+
+│   ├── 1_feature_engineering.py  # Creates 8-feature dataset (features.csv)
+
+│   ├── 2_train_model.py          # Trains LightGBM and Random Forest- Maintains temporal locality and burst patterns
+
+│   └── cache_simulator.py        # Contains LRUCache and LearnedCache classes
+
+│- Enables robust model training```[Installation](#️-installation) •
+
+├── Evaluation/
+
+│   ├── 3_benchmark.py            # Runs comparison of all 3 policies
+
+│   ├── 4_summary.py              # Helper script for results
+
+│   └── 5_model_comparison.py     # Displays final comprehensive results## Project Structure├── 0_convert_azure_trace.py    # Convert Azure trace to cache format
+
+│
+
+├── Data/
+
+│   └── AzureLLMInferenceTrace_code.csv # The raw dataset
+
+│```├── 0_augment_azure_trace.py    # Augment trace data for training[Usage](#-quick-start) •## 📊 Performance Results- `cache_simulator.py` - contains `LRUCache` and `LearnedCache` classes.
+
+└── requirements.txt                  # Python dependencies
+
+```ML-Cache-Project/
+
+
+
+---│├── 0_generate_data.py          # Generate synthetic trace (alternative)
+
+
+
+## 🔬 Technical Details├── Data Generation
+
+
+
+### Model Configurations│   ├── 0_convert_azure_trace.py    # Convert Azure trace to cache format├── 1_feature_engineering.py    # Extract features from trace[Documentation](#-technical-deep-dive)
+
+
+
+**LightGBM:**│   ├── 0_augment_azure_trace.py    # Augment 8k → 100k accesses
+
+```python
+
+LGBMRegressor(│   └── 0_generate_data.py          # Generate synthetic trace (alternative)├── 2_train_model.py            # Train LightGBM model
+
+    n_estimators=500,
+
+    max_depth=8,│
+
+    learning_rate=0.05,
+
+    subsample=0.8,├── ML Pipeline├── 3_benchmark.py              # Compare ML vs LRU- `3_benchmark.py` - runs comparisons and prints final hit rates.
+
+    colsample_bytree=0.8,
+
+    reg_alpha=0.1,│   ├── 1_feature_engineering.py    # Extract 8 enhanced features
+
+    reg_lambda=0.1
+
+)│   ├── 2_train_model.py            # Train LightGBM + Random Forest├── 4_summary.py                # Display results
+
+```
+
+│   └── cache_simulator.py          # LRU and ML cache implementations
+
+**Random Forest:**
+
+```python│├── cache_simulator.py          # LRU and Learned cache implementations---
+
+RandomForestRegressor(
+
+    n_estimators=500,├── Evaluation
+
+    max_depth=8,
+
+    max_features='sqrt',│   ├── 3_benchmark.py              # Compare LRU vs LightGBM vs RF├── AzureLLMInferenceTrace_code.csv  # Real Azure LLM trace data
+
+    min_samples_split=10,
+
+    min_samples_leaf=5│   ├── 4_summary.py                # Display detailed results
+
+)
+
+```│   └── 5_model_comparison.py       # Comprehensive 3-way comparison└── requirements.txt            # Python dependenciesTested on 100,000 augmented Azure LLM inference accesses:
+
+
+
+### Training Results│
+
+
+
+| Model          | RMSE      | Inference Speed | Best For                    |├── Data```
+
+|----------------|-----------|-----------------|------------------------------|
+
+| LightGBM       | 11,386.48 | ~130 it/s       | Speed-critical applications  |│   └── AzureLLMInferenceTrace_code.csv  # Real Azure LLM trace (8,819 requests)
+
+| Random Forest  | 10,768.71 | ~15 it/s        | Maximum accuracy            |
+
+│</div>
+
+---
+
+└── Configuration
+
+## 📈 Results Analysis
+
+    ├── requirements.txt            # Python dependencies## Installation
+
+### By Cache Size
+
+    └── .gitignore                  # Excludes models and generated files
+
+**Cache Size 100 (Small Cache)**
+
+- LRU: 27.29% → ML Best: 28.23% (+0.94%)```Data:
+
+- Analysis: ML learns to prioritize frequently reused contexts
+
+
+
+**Cache Size 500 (Medium Cache)**
+
+- LRU: 38.07% → ML Best: 41.52% (+3.45%)## Installation```bash
+
+- Analysis: ML identifies warm blocks better than recency alone
+
+
+
+**Cache Size 1000 (Optimal Size) 🏆**
+
+- LRU: 50.30% → ML Best: 54.05% (**+3.75%**)### Prerequisitesgit clone https://github.com/aithal007/ML-powered-Cache-Replacement-System.git## 🎯 What is This?
+
+- Analysis: Ideal balance - ML captures complex patterns effectively
+
+- Python 3.8 or higher
+
+**Cache Size 2000 (Large Cache)**
+
+- LRU: 70.58% → ML Best: 72.36% (+1.78%)- pip package managercd ML-powered-Cache-Replacement-System
+
+- Analysis: Working set fits well, both policies perform strongly
+
+
+
+---
+
+### Setuppip install -r requirements.txt| Cache Size | LRU Hit Rate | ML Hit Rate | Improvement |- `trace.txt` - NOT INCLUDED. You must download a large real-world trace (MSR Cambridge / SNIA / CloudPhysics) and place it here.
+
+## 🎯 Why ML Beats LRU
+
+
+
+| Aspect           | LRU                          | ML Models (LightGBM/RF)                |
+
+|------------------|------------------------------|----------------------------------------|```bash```
+
+| **Features Used**| 1 (recency only)             | 8 (recency, frequency, patterns, etc.) |
+
+| **Pattern Detection** | None                    | Detects periodic, burst, and hot/cold patterns |# Clone the repository
+
+| **Prediction**   | Reactive (past behavior)     | Predictive (forecasts future reuse)    |
+
+| **Workload Adaptation** | Fixed heuristic       | Learns workload-specific patterns      |git clone https://github.com/aithal007/ML-powered-Cache-Replacement-System.gitTraditional cache replacement policies like **LRU (Least Recently Used)** rely on simple heuristics that fail to capture complex access patterns. This project introduces an **ML-powered cache** that:
+
+| **Accuracy**     | Baseline                     | +2.5% average improvement              |
+
+cd ML-powered-Cache-Replacement-System
+
+---
+
+**Dependencies:** pandas, numpy, lightgbm, scikit-learn, joblib, tqdm
+
+## 🚀 Future Improvements
+
+# Install dependencies
+
+- [ ] Add more ML models (XGBoost, Neural Networks)
+
+- [ ] Implement online learning for dynamic workloadspip install -r requirements.txt|------------|--------------|-------------|-------------|
+
+- [ ] Support for additional cache policies (LFU, ARC, LIRS)
+
+- [ ] Multi-tier caching strategies```
+
+- [ ] GPU-accelerated inference
+
+- [ ] Hybrid ML+LRU approach## Usage
+
+- [ ] Real-time deployment in production systems
+
+### Dependencies
+
+---
+
+- pandas >= 1.3.0- 🎓 **Learns** from real access patterns using machine learning
+
+## 🤝 Contributing
+
+- numpy >= 1.21.0
+
+Contributions are welcome! To contribute:
+
+- lightgbm >= 3.3.0### Quick Start (Azure Trace)
+
+1. Fork the repository
+
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)- scikit-learn >= 1.0.0
+
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+
+4. Push to the branch (`git push origin feature/amazing-feature`)- joblib >= 1.1.0- 🚀 **Predicts** which blocks will be reused soon vs. later| **100**    | 27.29%       | **28.23%**  | **+0.94%**  |Quick start (PowerShell):
+
+5. Open a Pull Request
+
+- tqdm >= 4.62.0
+
+---
+
+```bash
+
+## 📄 License
+
+## Usage
+
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+
+# Convert and augment Azure trace- 📊 **Outperforms** traditional LRU across all cache sizes
+
+---
+
+### Option 1: Use Real Azure LLM Trace (Recommended)
+
+## 👤 Author
+
+python 0_convert_azure_trace.py
+
+**aithal007**
+
+- GitHub: [@aithal007](https://github.com/aithal007)```bash
+
+
+
+---# Step 1: Convert Azure trace to cache formatpython 0_augment_azure_trace.py- 🔬 **Trained** on real Azure LLM inference trace data| **500**    | 38.07%       | **41.52%**  | **+3.45%**  |
+
+
+
+## 🙏 Acknowledgmentspython 0_convert_azure_trace.py
+
+
+
+- **Microsoft Azure** for the LLM inference trace dataset# Output: 8,819 LLM requests → trace.txt
+
+- **LightGBM Team** for the gradient boosting framework
+
+- **Scikit-learn** for Random Forest implementation
+
+- **Research Community** for pioneering work on learned cache replacement
+
+# Step 2: Augment trace for robust training# Train and benchmark
+
+---
+
+python 0_augment_azure_trace.py
+
+## 📚 Citation
+
+# Output: 100,000 accesses with preserved patternspython 1_feature_engineering.py
+
+If you use this project in your research, please cite:
+
+
+
+```bibtex
+
+@misc{ml-cache-replacement-2025,# Step 3: Extract 8 enhanced featurespython 2_train_model.py## 🏆 Performance Results| **1000**   | 50.30%       | **54.00%**  | **+3.70%**  |```powershell
+
+  author = {aithal007},
+
+  title = {ML-Powered Cache Replacement System},python 1_feature_engineering.py
+
+  year = {2025},
+
+  publisher = {GitHub},# Output: features.csv with recency, frequency, patterns, etc.python 3_benchmark.py
+
+  url = {https://github.com/aithal007/ML-powered-Cache-Replacement-System}
+
+}
+
+```
+
+# Step 4: Train both ML modelspython 4_summary.py
+
+---
+
+python 2_train_model.py
+
+<div align="center">
+
 # Output: cache_model_lgbm.pkl, cache_model_rf.pkl```
 
+**⭐ Star this repository if you find it useful!**
 
+
+
+[Report Bug](https://github.com/aithal007/ML-powered-Cache-Replacement-System/issues) · [Request Feature](https://github.com/aithal007/ML-powered-Cache-Replacement-System/issues)
 
 # Step 5: Run comprehensive benchmark> **Tested on 100,000 augmented Azure LLM inference accesses**| **2000**   | 70.58%       | **72.33%**  | **+1.75%**  |python -m pip install -r requirements.txt
+
+</div>
 
 python 3_benchmark.py
 
